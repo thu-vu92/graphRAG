@@ -1,0 +1,23 @@
+# Environment
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Generated graph data (user-specific, can be large)
+graphs/
+
+# Raw source documents (user-specific)
+raw/
+
+# Jupyter (no longer used)
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db

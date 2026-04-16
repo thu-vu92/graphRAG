@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GraphRAG Explorer</title>
+<link rel="stylesheet" href="/static/css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+</head>
+<body>
+
+<!-- ── Header ─────────────────────────────────────────────────────────────── -->
+<header>
+  <h1>GraphRAG Explorer</h1>
+
+  <div class="header-controls">
+    <select id="topic-select">
+      <option value="">— Select a topic —</option>
+      {% for t in topics %}
+      <option value="{{ t.topic }}">
+        {{ t.topic }}{% if t.has_graph %} ({{ t.node_count or '?' }} nodes){% else %} (not built){% endif %}
+      </option>
+      {% endfor %}
+    </select>
+
+    <button class="btn-primary" id="btn-build">Build Graph</button>
+
+    <div class="status-badge" id="status-badge">
+      <span id="status-text">No topic selected</span>
+    </div>
+  </div>
+
+  <div class="stats">
+    nodes <span id="stat-nodes">—</span> &nbsp;|&nbsp;
+    edges <span id="stat-edges">—</span> &nbsp;|&nbsp;
+    communities <span id="stat-communities">—</span>
+  </div>
+</header>
+
+<!-- ── Main layout ─────────────────────────────────────────────────────────── -->
+<div class="main-layout">
+
+  <!-- ── Chat panel ──────────────────────────────────────────────────────── -->
+  <div class="chat-panel">
+    <div class="chat-messages" id="chat-messages">
+      <div class="chat-welcome">
+        <div class="chat-welcome-title">GraphRAG Explorer</div>
+        <div class="chat-welcome-sub">Select a topic and ask anything about its knowledge graph.</div>
+      </div>
+    </div>
+    <div class="chat-input-row">
+      <textarea id="chat-input" placeholder="Ask a question about this topic…" rows="1"></textarea>
+      <button class="btn-primary" id="btn-send">Send</button>
+    </div>
+  </div>
+
+  <!-- ── Graph section ───────────────────────────────────────────────────── -->
+  <div class="graph-section">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="search-wrap">
+        <input type="search" id="search" placeholder="Search nodes…">
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Entity Types</div>
+        <div id="legend"></div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Controls</div>
+        <div class="controls">
+          <div class="control-row">
+            <div class="control-label">Link distance</div>
+            <input type="range" id="link-distance" min="40" max="300" value="120">
+          </div>
+          <div class="control-row">
+            <div class="control-label">Charge strength</div>
+            <input type="range" id="charge" min="-800" max="-50" value="-300">
+          </div>
+          <div class="control-row">
+            <div class="control-label">Edge labels</div>
+            <input type="range" id="label-threshold" min="0" max="10" value="3"
+                   title="Show labels on edges whose nodes have degree ≥ this value">
+          </div>
+          <div class="btn-row">
+            <button class="ctrl-btn" id="btn-reset">Reset zoom</button>
+            <button class="ctrl-btn" id="btn-all">Show all</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Graph canvas -->
+    <div id="graph-container">
+      <svg id="graph">
+        <defs>
+          <marker id="arrow" viewBox="0 -4 10 8" refX="18" refY="0"
+                  markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,-4L10,0L0,4" fill="#1e3a5f"/>
+          </marker>
+        </defs>
+        <g id="root"></g>
+      </svg>
+      <div id="tooltip"></div>
+      <div id="graph-empty">No graph loaded.<br>Select a topic and click Build Graph.</div>
+    </div>
+
+    <!-- Detail panel (Obsidian-style) -->
+    <div id="detail-panel"></div>
+
+  </div><!-- /graph-section -->
+
+</div><!-- /main-layout -->
+
+<script src="/static/js/graph.js"></script>
+<script src="/static/js/app.js"></script>
+</body>
+</html>

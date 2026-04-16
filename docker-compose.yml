@@ -1,0 +1,12 @@
+services:
+  graphrag:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file: .env
+    volumes:
+      # Mount local raw/ and graphs/ so data persists across container restarts
+      # and users can add documents without rebuilding the image.
+      - ./raw:/app/raw
+      - ./graphs:/app/graphs
+    restart: unless-stopped
